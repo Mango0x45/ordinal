@@ -1,0 +1,72 @@
+.Dd $Mdocdate: October 4 2023 $
+.Dt ORDINAL 1
+.Os
+.Sh NAME
+.Nm ordinal
+.Nd convert cardinal numbers to ordinal numbers
+.Sh SYNOPSIS
+.Nm
+.Op Fl p Ar indicies ...
+.Op Ar
+.Sh DESCRIPTION
+The
+.Nm
+utility converts cardinal numbers into ordinal numbers.
+Input is read from the files provided as command-line arguments, or the standard
+input if none are supplied.
+Additionally, the special filename
+.Sq -
+can be provided to refer to the standard input.
+.Pp
+When processing input, any text that does not constitue a number
+.Pq any sequence of the digits 0\(en9
+is simply printed to the standard output verbatim.
+Numbers on the other hand are suffixed as per the rules of the English language
+(21 becomes
+.Sq 21st ,
+57 becomes
+.Sq 57th ,
+and so on).
+The default behavior is to suffix all numbers with either
+.Sq st ,
+.Sq nd ,
+.Sq rd ,
+or
+.Sq th
+\(em although this behavior can be modified with the
+.Fl p
+flag.
+.Pp
+The options are as follows:
+.Bl -tag -width Ds
+.It Fl p Ns , Fl Fl positions Ns = Ns Ar indicies
+Only convert the cardinal numbers in the positions specified by the
+comma-separated list
+.Ar indicies .
+For example, if
+.Ar indicies
+is
+.Sq 1,3,5 ,
+then only the 1st, 3rd, and 5th numbers on each line of input will be converted.
+.Pp
+The provided list of indicies must only contain positive integers, and no
+whitespace.
+.El
+.Sh EXIT STATUS
+.Ex -std
+.Sh EXAMPLES
+Get the ordinal numbers 1\(en25:
+.Pp
+.Dl $ seq 25 | ordinal
+.Pp
+Get the date, turning the day of the month into an ordinal whiel the year
+remains a cardinal
+.Pq e.g. Sq 29th of September, 2003 :
+.Pp
+.Dl $ date +'%d of %B, %Y' | ordinal -p 1
+.Sh SEE ALSO
+.Xr date 1 ,
+.Xr sed 1 ,
+.Xr seq 1
+.Sh AUTHORS
+.An Thomas Voss Aq Mt mail@thomasvoss.com
