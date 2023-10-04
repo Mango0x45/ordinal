@@ -160,7 +160,7 @@ print_ordinal(void)
 		return true;
 
 	/* Basic binary search */
-	for (size_t l = 0, r = positions.len - 1, m; l <= r;) {
+	for (ssize_t l = 0, r = positions.len - 1, m; l <= r;) {
 		m = l + (r - l) / 2;
 		if (positions.ps[m] == pos)
 			return true;
