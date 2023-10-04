@@ -12,6 +12,8 @@ const char empty_field[] = "argument to the -p option contains an empty field";
 const char invalid_char[] = "argument to the -p option must be a "
                             "comma-seperated list of positive integers";
 const char final_comma[] = "argument to the -p option contains trailing comma";
+const char empty_string[] = "argument to the -p option cannot be "
+                            "the empty string";
 
 const char *argv0;
 unsigned pos;
@@ -99,6 +101,11 @@ append_positions(char *raw)
 
 	if (positions.ps != NULL) {
 		warnx("the -p option should only be provided once");
+		usage();
+	}
+
+	if (*raw == '\0') {
+		warnx(empty_string);
 		usage();
 	}
 
