@@ -5,6 +5,7 @@ LEX = flex
 CFLAGS = \
 	-Wall -Wextra -Wpedantic -Werror \
 	-O3 -march=native -mtune=native -pipe
+LFLAGS = -f
 LDLIBS = -lfl
 
 PREFIX = /usr/local
@@ -15,7 +16,7 @@ ${target}: lex.yy.c
 	${CC} ${CFLAGS} ${LDLIBS} -o $@ $<
 
 lex.yy.c: main.l
-	${LEX} $<
+	${LEX} ${LFLAGS} $<
 
 install:
 	mkdir -p ${DPREFIX}/bin ${DPREFIX}/share/man/man1
