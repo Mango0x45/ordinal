@@ -27,7 +27,7 @@ static unsigned atou(const char *);
 static bool print_ordinal(void);
 %}
 
-%option nodefault noinput nounput
+%option nodefault noinput nounput 8bit
 
 %%
 
