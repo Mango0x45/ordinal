@@ -156,6 +156,9 @@ atou(const char *s)
 bool
 print_ordinal(void)
 {
+	if (positions.ps == NULL)
+		return true;
+
 	/* Basic binary search */
 	for (size_t l = 0, r = positions.len - 1, m; l <= r;) {
 		m = l + (r - l) / 2;
