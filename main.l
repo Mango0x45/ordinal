@@ -16,16 +16,14 @@ const char empty_string[] = "argument to the -p option cannot be "
                             "the empty string";
 
 const char *argv0;
-unsigned pos;
+size_t pos;
 struct {
-	unsigned *ps;
-	size_t len;
+	size_t *ps, len;
 } positions;
 
 static void usage(void);
 static void append_positions(char *s);
-static int ucmp(const void *, const void *);
-static unsigned atou(const char *);
+static size_t atozu(const char *);
 static bool print_ordinal(void);
 %}
 
@@ -55,8 +53,8 @@ main(int argc, char **argv)
 {
 	int opt, rv;
 	struct option longopts[] = {
-		{"positions", required_argument, 0, 'p'},
-		{ NULL,       0,                 0,  0 }
+		{"positions", required_argument, NULL, 'p'},
+		{ NULL,       0,                 NULL,  0 }
 	};
 
 	argv0 = argv[0];
@@ -129,32 +127,23 @@ append_positions(char *raw)
 	if (comma == true)
 		errx(EXIT_FAILURE, final_comma);
 
-	if ((positions.ps = malloc(sizeof(unsigned *) * positions.len)) == NULL)
+	if ((positions.ps = malloc(sizeof(size_t *) * positions.len)) == NULL)
 		err(EXIT_FAILURE, "malloc");
 
 	/* Iterate over each position, parse it, and sort the results.  It’s
-	   safe to use strtok() and atou() here since the input string has been
+	   safe to use strtok() and atozu() here since the input string has been
 	   pre-validated. */
 	s = strtok(raw, ",");
 	for (size_t i = 0; s != NULL; i++) {
-		positions.ps[i] = atou(s);
+		positions.ps[i] = atozu(s);
 		s = strtok(NULL, ",");
 	}
-	qsort(positions.ps, positions.len, sizeof(unsigned), ucmp);
 }
 
-int
-ucmp(const void *a, const void *b)
+size_t
+atozu(const char *s)
 {
-	unsigned a_ = *(unsigned *)a,
-	         b_ = *(unsigned *)b;
-	return a_ > b_ ? 1 : b_ < a_ ? -1 : 0;
-}
-
-unsigned
-atou(const char *s)
-{
-	unsigned n = 0;
+	size_t n = 0;
 	for (; *s; s++)
 		n = n * 10 + *s - '0';
 	return n;
@@ -166,16 +155,9 @@ print_ordinal(void)
 	if (positions.ps == NULL)
 		return true;
 
-	/* Basic binary search */
-	for (ssize_t l = 0, r = positions.len - 1, m; l <= r;) {
-		m = l + (r - l) / 2;
-		if (positions.ps[m] == pos)
+	for (size_t i = 0; i < positions.len; i++) {
+		if (positions.ps[i] == pos)
 			return true;
-		if (positions.ps[m] > pos)
-			r = m - 1;
-		else
-			l = m + 1;
 	}
-
 	return false;
 }
